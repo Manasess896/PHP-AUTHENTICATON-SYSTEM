@@ -1,0 +1,5 @@
+config/env_local.php
+.env
+log
+.vscode/
+.log

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resend Verification Email</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Animation CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        .btn-primary {
+            background: linear-gradient(to right, #4e73df, #224abe);
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(to right, #224abe, #1a3a8e);
+            transform: translateY(-2px);
+        }
+        .form-control:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        .form-control {
+            border-radius: 8px;
+            padding: 10px 15px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-sm animate__animated animate__fadeIn">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4 fade-in">
+                            <div class="d-flex justify-content-center">
+                                <div class="rounded-circle bg-primary bg-opacity-10 p-3 mb-3">
+                                    <i class="bi bi-envelope-check text-primary" style="font-size: 2rem;"></i>
+                                </div>
+                            </div>
+                            <h2 class="fw-bold text-primary">Resend Verification Email</h2>
+                            <p class="text-muted">Didn't receive your verification email? We'll send it again.</p>
+                        </div>
+                        
+                        <!-- Alert for displaying messages -->
+                        <div id="alertMessage" class="alert alert-dismissible fade show d-none" role="alert">
+                            <span id="alertText"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        
+                        <form id="resendVerificationForm" class="needs-validation" novalidate action="resend_verification.php" method="GET">
+                            <div class="mb-3 fade-in" style="animation-delay: 0.2s;">
+                                <div class="form-floating">
+                                    <input type="email" class="form-control" id="email" name="email" 
+                                           placeholder="name@example.com" autocomplete="email" required>
+                                    <label for="email">Email address</label>
+                                    <div class="invalid-feedback">Please enter a valid email address.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-4 fade-in" style="animation-delay: 0.3s;">
+                                <button type="submit" class="btn btn-primary py-3 fw-bold">Resend Verification Email</button>
+                            </div>
+                        </form>
+                        
+                        <div class="text-center mt-4 fade-in" style="animation-delay: 0.4s;">
+                            <p>Remember your password? <a href="login.php" class="text-decoration-none fw-bold">Login</a></p>
+                            <p>Don't have an account? <a href="register.html" class="text-decoration-none fw-bold">Register</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3 fade-in" style="animation-delay: 0.5s;">
+                    <a href="../index.html" class="text-decoration-none">
+                        <i class="bi bi-arrow-left"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for URL parameters to display success/error messages
+            const urlParams = new URLSearchParams(window.location.search);
+            const alertBox = document.getElementById('alertMessage');
+            const alertText = document.getElementById('alertText');
+            
+            if (urlParams.has('error')) {
+                alertBox.classList.remove('d-none', 'alert-success');
+                alertBox.classList.add('alert-danger');
+                alertText.innerHTML = decodeURIComponent(urlParams.get('error'));
+            } else if (urlParams.has('success')) {
+                alertBox.classList.remove('d-none', 'alert-danger');
+                alertBox.classList.add('alert-success');
+                alertText.innerHTML = decodeURIComponent(urlParams.get('success'));
+            }
+
+            // Pre-fill email if provided in URL
+            if (urlParams.has('email')) {
+                document.getElementById('email').value = decodeURIComponent(urlParams.get('email'));
+            }
+        });
+
+        // Form validation
+        document.getElementById('resendVerificationForm').addEventListener('submit', function(event) {
+            if (!this.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            this.classList.add('was-validated');
+        });
+    </script>
+</body>
+</html>

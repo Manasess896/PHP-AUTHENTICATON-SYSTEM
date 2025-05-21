@@ -1,0 +1,38 @@
+# Prevent directory listing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "\.(env|config|ini|json|lock|htaccess|log)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Add security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    # Enhanced CSP for reCAPTCHA
+    Header set Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://maxcdn.bootstrapcdn.com https://www.google.com https://www.gstatic.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://code.jquery.com https://maxcdn.bootstrapcdn.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://www.google.com/recaptcha/ 'unsafe-eval'; script-src-elem 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://code.jquery.com https://maxcdn.bootstrapcdn.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://www.google.com/recaptcha/; font-src 'self' https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://maxcdn.bootstrapcdn.com https://www.google.com https://www.gstatic.com data:; frame-src 'self' https://www.google.com https://recaptcha.google.com https://www.recaptcha.net; connect-src 'self' https://www.google.com https://www.recaptcha.net https://recaptcha.google.com https://www.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com;"
+</IfModule>
+
+# Enable reCAPTCHA functionality
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Allow reCAPTCHA API requests
+    RewriteCond %{REQUEST_URI} ^/recaptcha/api
+    RewriteRule .* - [L]
+    
+    # Allow connections to Google's reCAPTCHA servers
+    RewriteCond %{HTTP_REFERER} ^https://www\.google\.com/ [OR]
+    RewriteCond %{HTTP_REFERER} ^https://www\.recaptcha\.net/ [OR]
+    RewriteCond %{HTTP_REFERER} ^https://recaptcha\.google\.com/
+    RewriteRule .* - [L]
+</IfModule>
+ 
+# Redirect HTTP to HTTPS if needed
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
