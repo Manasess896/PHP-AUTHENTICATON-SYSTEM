@@ -18,7 +18,7 @@ A secure, modern authentication system built with PHP and MongoDB, featuring com
 
 ## 📚 Frequently Asked Questions (FAQ)
 
-**Having trouble getting started?** Check out our comprehensive [**FAQ Guide**](faq.html) for solutions to common issues including:
+**Having trouble getting started?** Check out our comprehensive [**FAQ Guide**](https://manasess896.github.io/PHP-AUTHENTICATON-SYSTEM/faq.html) for solutions to common issues including:
 
 - 🔧 **reCAPTCHA Configuration** - Fixing domain and localhost issues
 - 🔗 **Domain & URL Settings** - Configuring APP_URL correctly
@@ -191,7 +191,6 @@ Users can log in using:
 
 - Email address
 - Password
-- Optional 2FA code (if enabled)
 - Remember me option for extended session
 
 ### Password Reset
@@ -220,7 +219,7 @@ To run the project in development mode:
    php -S localhost:8000
    ```
 
-**💡 Troubleshooting:** If you encounter any issues during development, check the [FAQ Guide](faq.html) for common solutions.
+**💡 Troubleshooting:** If you encounter any issues during development, check the [FAQ Guide](https://manasess896.github.io/PHP-AUTHENTICATON-SYSTEM/faq.html) for common solutions.
 
 ## Production Deployment
 
