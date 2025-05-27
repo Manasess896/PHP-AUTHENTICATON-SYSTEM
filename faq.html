@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - PHP Authentication System</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4f46e5;
+      --secondary-color: #64748b;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --light-bg: #f8fafc;
+      --dark-text: #1e293b;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--light-bg) 0%, #e2e8f0 100%);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #6366f1 100%);
+      box-shadow: 0 4px 20px rgba(79, 70, 229, 0.1);
+    }
+
+    .hero-section {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #6366f1 100%);
+      color: white;
+      padding: 4rem 0;
+      margin-bottom: 3rem;
+    }
+
+    .faq-card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .faq-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .faq-header {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-radius: 12px 12px 0 0;
+      padding: 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .faq-title {
+      margin: 0;
+      color: var(--dark-text);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .faq-body {
+      padding: 1.5rem;
+    }
+
+    .status-badge {
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-critical {
+      background: #fef2f2;
+      color: var(--danger-color);
+      border: 1px solid #fecaca;
+    }
+
+    .status-important {
+      background: #fef3c7;
+      color: var(--warning-color);
+      border: 1px solid #fde68a;
+    }
+
+    .status-info {
+      background: #dbeafe;
+      color: #2563eb;
+      border: 1px solid #93c5fd;
+    }
+
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+    }
+
+    .step-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .step-list li {
+      padding: 0.75rem 0;
+      padding-left: 2.5rem;
+      position: relative;
+      border-left: 2px solid #e2e8f0;
+    }
+
+    .step-list li:before {
+      content: counter(step-counter);
+      counter-increment: step-counter;
+      position: absolute;
+      left: -0.75rem;
+      top: 0.75rem;
+      background: var(--primary-color);
+      color: white;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    .step-list {
+      counter-reset: step-counter;
+    }
+
+    .highlight {
+      background: #fef9c3;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .search-box {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .table-of-contents {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .toc-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      display: block;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f1f5f9;
+      transition: all 0.3s ease;
+    }
+
+    .toc-link:hover {
+      color: #6366f1;
+      padding-left: 1rem;
+    }
+
+    .icon-wrapper {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .icon-critical {
+      background: var(--danger-color);
+    }
+
+    .icon-important {
+      background: var(--warning-color);
+    }
+
+    .icon-info {
+      background: #2563eb;
+    }
+
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 3rem;
+      height: 3rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(79, 70, 229, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .back-to-top:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(79, 70, 229, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 2rem 0;
+      }
+
+      .faq-header {
+        padding: 1rem;
+      }
+
+      .faq-body {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <i class="fas fa-shield-alt me-2"></i>AuthBoost
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="pages/login.php">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="pages/register.php">Register</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="faq.html">FAQ</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container text-center">
+      <h1 class="display-4 fw-bold mb-4">
+        <i class="fas fa-question-circle me-3"></i>
+        Frequently Asked Questions
+      </h1>
+      <p class="lead mb-0">Common issues and solutions for the PHP Authentication System</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <!-- Search Box -->
+    <div class="search-box p-4">
+      <div class="input-group">
+        <span class="input-group-text"><i class="fas fa-search"></i></span>
+        <input type="text" class="form-control form-control-lg" id="searchInput" placeholder="Search FAQ...">
+      </div>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="table-of-contents">
+      <h4 class="mb-3"><i class="fas fa-list me-2"></i>Quick Navigation</h4>
+      <div class="row">
+        <div class="col-md-6">
+          <a href="#recaptcha" class="toc-link">reCAPTCHA Configuration</a> <a href="#domains" class="toc-link">Domain
+            &amp; URL Settings</a>
+          <a href="#htaccess" class="toc-link">Security &amp; .htaccess Rules</a>
+          <a href="#logging" class="toc-link">Debugging &amp; Logging</a>
+        </div>
+        <div class="col-md-6">
+          <a href="#email" class="toc-link">Email Configuration</a>
+          <a href="#database" class="toc-link">Database Issues</a>
+          <a href="#permissions" class="toc-link">File Permissions</a>
+          <a href="#performance" class="toc-link">Performance Issues</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Items -->
+    <div class="faq-container">
+      <!-- reCAPTCHA Configuration -->
+      <div class="faq-card" id="recaptcha">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-critical">
+              <i class="fas fa-robot"></i>
+            </div>
+            reCAPTCHA Configuration Issues
+            <span class="status-badge status-critical">Critical</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Problem:</strong> reCAPTCHA not working or showing "Invalid domain" errors.</p>
+
+          <h5><i class="fas fa-tools me-2"></i>Solutions:</h5>
+
+          <ol class="step-list">
+            <li>
+              <strong>For Local Development:</strong><br>
+              Add <span class="highlight">localhost</span> to your reCAPTCHA domains in Google reCAPTCHA Console.
+              <div class="code-block">
+                Domain: localhost
+                Alternative: 127.0.0.1</div>
+            </li>
+            <li>
+              <strong>For Production:</strong><br>
+              Add your server's IP address or domain name:
+              <div class="code-block">
+                Domain: yourdomain.com
+                IP: 192.168.1.100
+                Universal (not recommended): 0.0.0.0/0</div>
+            </li>
+            <li>
+              <strong>Update .env file:</strong><br>
+              Make sure your reCAPTCHA keys are correctly set:
+              <div class="code-block">
+                RECAPTCHA_SITE_KEY=your_site_key_here
+                RECAPTCHA_SECRET_KEY=your_secret_key_here</div>
+            </li>
+          </ol>
+
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Important:</strong> Never use 0.0.0.0/0 in production as it allows any domain to use your reCAPTCHA
+            keys.
+          </div>
+        </div>
+      </div>
+
+      <!-- Domain & URL Settings -->
+      <div class="faq-card" id="domains">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-important">
+              <i class="fas fa-globe"></i>
+            </div>
+            Domain &amp; URL Configuration
+            <span class="status-badge status-important">Important</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Problem:</strong> Application URLs not working correctly, email links broken, or redirects failing.
+          </p>
+
+          <h5><i class="fas fa-cog me-2"></i>Configuration Steps:</h5>
+
+          <ol class="step-list">
+            <li>
+              <strong>Update .env APP_URL:</strong>
+              <div class="code-block">
+                # For local development
+                APP_URL=http://localhost/your-project-folder
+
+                # For production
+                APP_URL=https://yourdomain.com</div>
+            </li>
+            <li>
+              <strong>Configure email URLs:</strong><br>
+              Email verification and password reset links use APP_URL as base.
+            </li>
+            <li>
+              <strong>Check virtual host configuration:</strong><br>
+              Ensure your web server is configured to serve the application correctly.
+            </li>
+          </ol>
+
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Note:</strong> URL marking and SQL injection protection are not implemented in this version.
+            Consider adding these for production use.
+          </div>
+        </div>
+      </div>
+
+      <!-- Security & .htaccess Rules -->
+      <div class="faq-card" id="htaccess">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-critical">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            Security &amp; .htaccess Configuration
+            <span class="status-badge status-critical">Critical</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Problem:</strong> Third-party resources blocked, CSP violations, or external API calls failing.</p>
+
+          <h5><i class="fas fa-lock me-2"></i>Understanding Security Rules:</h5>
+
+          <p>The .htaccess file contains strict Content Security Policy (CSP) rules that only allow:</p>
+          <ul>
+            <li><strong>reCAPTCHA:</strong> Google's reCAPTCHA services</li>
+            <li><strong>Bootstrap:</strong> CDN resources for styling</li>
+            <li><strong>jQuery:</strong> JavaScript library</li>
+          </ul>
+
+          <h5><i class="fas fa-plus me-2"></i>Adding New Third-Party Services:</h5>
+
+          <ol class="step-list">
+            <li>
+              <strong>Identify the domain:</strong><br>
+              Find the exact domain of the service you want to add.
+            </li>
+            <li>
+              <strong>Update CSP header in .htaccess:</strong><br>
+              Add the domain to the appropriate CSP directive:
+              <div class="code-block">
+                # Example: Adding Font Awesome
+                script-src 'self' ... https://cdnjs.cloudflare.com;
+                style-src 'self' ... https://cdnjs.cloudflare.com;</div>
+            </li>
+            <li>
+              <strong>Test the changes:</strong><br>
+              Clear browser cache and test the functionality.
+            </li>
+          </ol>
+
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Security Warning:</strong> Only add trusted domains to prevent XSS attacks.
+          </div>
+        </div>
+      </div>
+
+      <!-- Debugging & Logging -->
+      <div class="faq-card" id="logging">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-info">
+              <i class="fas fa-bug"></i>
+            </div>
+            Debugging &amp; Logging
+            <span class="status-badge status-info">Info</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Problem:</strong> No error logs, debugging information not available, or issues are hard to
+            diagnose.</p>
+
+          <h5><i class="fas fa-file-alt me-2"></i>Enable Logging:</h5>
+
+          <ol class="step-list">
+            <li>
+              <strong>Update .env file:</strong>
+              <div class="code-block">
+                APP_DEBUG=true
+                LOGGING_ENABLED=true
+                LOG_LEVEL=debug</div>
+            </li>
+            <li>
+              <strong>Check log files:</strong><br>
+              Logs are typically stored in:
+              <div class="code-block">
+                /logs/app.log
+                /logs/email.log
+                /logs/recaptcha.log</div>
+            </li>
+            <li>
+              <strong>Email debugging:</strong><br>
+              Increase mail debug level:
+              <div class="code-block">
+                MAIL_DEBUG_LEVEL=2 # 0=off, 1=client, 2=server</div>
+            </li>
+          </ol>
+
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Production Note:</strong> Log file creation is set to zero by default for security. Always disable
+            debugging in production.
+          </div>
+        </div>
+      </div>
+
+      <!-- Email Configuration -->
+      <div class="faq-card" id="email">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-important">
+              <i class="fas fa-envelope"></i>
+            </div>
+            Email Configuration Issues
+            <span class="status-badge status-important">Important</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Problem:</strong> Emails not sending, verification emails not received, or SMTP errors.</p>
+
+          <h5><i class="fas fa-cog me-2"></i>Email Setup:</h5>
+
+          <ol class="step-list">
+            <li>
+              <strong>Gmail Configuration:</strong>
+              <div class="code-block">
+                MAIL_HOST=smtp.gmail.com
+                MAIL_PORT=587
+                MAIL_USERNAME=your-email@gmail.com
+                MAIL_PASSWORD="your-app-password"
+                MAIL_ENCRYPTION=tls</div>
+            </li>
+            <li>
+              <strong>Generate App Password:</strong><br>
+              For Gmail, use App Passwords instead of your regular password.
+            </li>
+            <li>
+              <strong>Test email sending:</strong><br>
+              Use the contact form or registration to test email functionality.
+            </li>
+            <li>
+              <strong>Check spam folder:</strong><br>
+              Verification emails might be marked as spam.
+            </li>
+          </ol>
+
+          <div class="alert alert-info">
+            <i class="fas fa-lightbulb me-2"></i>
+            <strong>Tip:</strong> For production, consider using services like SendGrid, Mailgun, or Amazon SES for
+            better deliverability.
+          </div>
+        </div>
+      </div>
+
+      <!-- Database Issues -->
+      <div class="faq-card" id="database">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-critical">
+              <i class="fas fa-database"></i>
+            </div>
+            MongoDB Database Issues
+            <span class="status-badge status-critical">Critical</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Problem:</strong> Database connection errors, authentication failures, or collection access issues.
+          </p>
+
+          <h5><i class="fas fa-link me-2"></i>Database Setup:</h5>
+
+          <ol class="step-list">
+            <li>
+              <strong>MongoDB Atlas Setup:</strong><br>
+              Ensure your MongoDB Atlas cluster is properly configured:
+              <div class="code-block">
+                MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database
+                MONGODB_DATABASE=auth</div>
+            </li>
+            <li>
+              <strong>IP Whitelist:</strong><br>
+              Add your server's IP to MongoDB Atlas Network Access.
+            </li>
+            <li>
+              <strong>User Permissions:</strong><br>
+              Ensure the database user has read/write permissions.
+            </li>
+            <li>
+              <strong>Test Connection:</strong><br>
+              Run the database diagnostics script to test connectivity.
+            </li>
+          </ol>
+
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Security:</strong> Never expose database credentials in client-side code.
+          </div>
+        </div>
+      </div>
+
+      <!-- File Permissions -->
+      <div class="faq-card" id="permissions">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-important">
+              <i class="fas fa-key"></i>
+            </div>
+            File Permissions &amp; Access Issues
+            <span class="status-badge status-important">Important</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Problem:</strong> Permission denied errors, unable to write logs, or file access issues.</p>
+
+          <h5><i class="fas fa-folder me-2"></i>Required Permissions:</h5>
+
+          <ol class="step-list">
+            <li>
+              <strong>Logs Directory:</strong><br>
+              Ensure the logs directory is writable:
+              <div class="code-block">
+                chmod 755 /logs/
+                chmod 644 /logs/*.log</div>
+            </li>
+            <li>
+              <strong>Config Files:</strong><br>
+              Protect sensitive configuration files:
+              <div class="code-block">
+                chmod 600 .env
+                chmod 644 config/*.php</div>
+            </li>
+            <li>
+              <strong>Web Server User:</strong><br>
+              Ensure the web server has access to required files.
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Performance Issues -->
+      <div class="faq-card" id="performance">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-info">
+              <i class="fas fa-tachometer-alt"></i>
+            </div>
+            Performance Optimization
+            <span class="status-badge status-info">Info</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Issue:</strong> Slow loading times, high server load, or timeout errors.</p>
+
+          <h5><i class="fas fa-rocket me-2"></i>Optimization Tips:</h5>
+
+          <ol class="step-list">
+            <li>
+              <strong>Enable PHP OPcache:</strong><br>
+              Configure OPcache in your PHP settings for better performance.
+            </li>
+            <li>
+              <strong>Database Indexing:</strong><br>
+              Ensure proper indexes on frequently queried fields (email, username).
+            </li>
+            <li>
+              <strong>Rate Limiting:</strong><br>
+              The system includes rate limiting to prevent abuse.
+            </li>
+            <li>
+              <strong>CDN Usage:</strong><br>
+              Use CDNs for static assets like Bootstrap and jQuery.
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Common Installation Issues -->
+      <div class="faq-card">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-critical">
+              <i class="fas fa-download"></i>
+            </div>
+            Common Installation Issues
+            <span class="status-badge status-critical">Critical</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Problem:</strong> Installation errors, missing dependencies, or setup failures.</p>
+
+          <h5><i class="fas fa-list-check me-2"></i>Prerequisites Checklist:</h5>
+
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">✅ PHP 7.4 or higher</li>
+            <li class="list-group-item">✅ Composer installed</li>
+            <li class="list-group-item">✅ MongoDB PHP extension</li>
+            <li class="list-group-item">✅ OpenSSL extension</li>
+            <li class="list-group-item">✅ cURL extension</li>
+            <li class="list-group-item">✅ JSON extension</li>
+          </ul>
+
+          <h5 class="mt-4"><i class="fas fa-terminal me-2"></i>Installation Commands:</h5>
+          <div class="code-block">
+            # Install dependencies
+            composer install
+
+            # Copy environment file
+            cp .env.example .env
+
+            # Configure your settings in .env file
+            # Set up MongoDB connection
+            # Configure email settings
+            # Add reCAPTCHA keys</div>
+        </div>
+      </div>
+
+      <!-- Getting Help -->
+      <div class="faq-card">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-info">
+              <i class="fas fa-life-ring"></i>
+            </div>
+            Getting Additional Help
+            <span class="status-badge status-info">Info</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p>If you're still experiencing issues after following this FAQ:</p>
+
+          <ol class="step-list">
+            <li>
+              <strong>Check the logs:</strong><br>
+              Enable debugging and check log files for specific error messages.
+            </li>
+            <li>
+              <strong>Browser Console:</strong><br>
+              Check browser developer tools for JavaScript errors.
+            </li>
+            <li>
+              <strong>Server Logs:</strong><br>
+              Check Apache/Nginx error logs for server-side issues.
+            </li>
+            <li>
+              <strong>Community Support:</strong><br>
+              Create an issue on the project's GitHub repository with:
+              <ul>
+                <li>Detailed description of the problem</li>
+                <li>Error messages (with sensitive data removed)</li>
+                <li>Steps to reproduce the issue</li>
+                <li>Your environment details</li>
+              </ul>
+            </li>
+          </ol>
+
+          <div class="alert alert-success">
+            <i class="fas fa-heart me-2"></i>
+            <strong>Open Source:</strong> This project is open source! Contributions and improvements are welcome.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-light py-5 mt-5">
+    <div class="container text-center">
+      <h5>PHP Authentication System</h5>
+      <p class="mb-3">Secure, modern authentication solution for PHP applications</p>
+      <div class="d-flex justify-content-center gap-3">
+        <a href="index.html" class="text-light text-decoration-none">Home</a>
+        <a href="pages/login.php" class="text-light text-decoration-none">Login</a>
+        <a href="pages/register.php" class="text-light text-decoration-none">Register</a>
+        <a href="faq.html" class="text-light text-decoration-none">FAQ</a>
+      </div>
+      <hr class="my-4">
+      <p class="mb-0">&copy; 2025 AuthBoost. Open Source Project.</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function () {
+      const searchTerm = this.value.toLowerCase();
+      const faqCards = document.querySelectorAll('.faq-card');
+
+      faqCards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        if (text.includes(searchTerm)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+
+    // Back to top functionality
+    const backToTopButton = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', function () {
+      if (window.pageYOffset > 300) {
+        backToTopButton.style.display = 'flex';
+      } else {
+        backToTopButton.style.display = 'none';
+      }
+    });
+
+    backToTopButton.addEventListener('click', function () {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add animation to FAQ cards on scroll
+    function animateOnScroll() {
+      const cards = document.querySelectorAll('.faq-card');
+      const windowHeight = window.innerHeight;
+
+      cards.forEach(card => {
+        const cardTop = card.getBoundingClientRect().top;
+
+        if (cardTop < windowHeight - 100) {
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }
+      });
+    }
+
+    // Initial setup for animations
+    document.querySelectorAll('.faq-card').forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    });
+
+    window.addEventListener('scroll', animateOnScroll);
+    window.addEventListener('load', animateOnScroll);
+
+    // Highlight search terms
+    function highlightSearchTerms() {
+      const searchInput = document.getElementById('searchInput');
+      const searchTerm = searchInput.value.toLowerCase().trim();
+
+      if (searchTerm === '') return;
+
+      const faqCards = document.querySelectorAll('.faq-card');
+
+      faqCards.forEach(card => {
+        const walker = document.createTreeWalker(
+          card,
+          NodeFilter.SHOW_TEXT,
+          null,
+          false
+        );
+
+        const textNodes = [];
+        let node;
+
+        while (node = walker.nextNode()) {
+          textNodes.push(node);
+        }
+
+        textNodes.forEach(textNode => {
+          const text = textNode.textContent;
+          const regex = new RegExp(`(${searchTerm})`, 'gi');
+
+          if (regex.test(text)) {
+            const highlightedText = text.replace(regex, '<mark>$1</mark>');
+            const span = document.createElement('span');
+            span.innerHTML = highlightedText;
+            textNode.parentNode.replaceChild(span, textNode);
+          }
+        });
+      });
+    }
+
+    // Clear highlights when search is cleared
+    document.getElementById('searchInput').addEventListener('input', function () {
+      // Remove existing highlights
+      document.querySelectorAll('mark').forEach(mark => {
+        const parent = mark.parentNode;
+        parent.replaceChild(document.createTextNode(mark.textContent), mark);
+        parent.normalize();
+      });
+
+      // Add new highlights if there's a search term
+      if (this.value.trim() !== '') {
+        setTimeout(highlightSearchTerms, 100);
+      }
+    });
+  </script>
+</body>
+
+</html>

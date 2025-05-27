@@ -16,6 +16,22 @@ A secure, modern authentication system built with PHP and MongoDB, featuring com
 - Content security headers
 - Responsive UI using Bootstrap
 
+## 📚 Frequently Asked Questions (FAQ)
+
+**Having trouble getting started?** Check out our comprehensive [**FAQ Guide**](faq.html) for solutions to common issues including:
+
+- 🔧 **reCAPTCHA Configuration** - Fixing domain and localhost issues
+- 🔗 **Domain & URL Settings** - Configuring APP_URL correctly
+- 🛡️ **Security & .htaccess Rules** - Understanding CSP policies
+- 🐛 **Debugging & Logging** - Enabling debug mode and logs
+- 📧 **Email Configuration** - Setting up Gmail SMTP
+- 🗄️ **Database Issues** - MongoDB Atlas connection problems
+- 📁 **File Permissions** - Fixing directory access errors
+- ⚡ **Performance Optimization** - Improving system performance
+- 📦 **Installation Issues** - Prerequisites and setup checklist
+
+➡️ **[View Complete FAQ Guide](faq.html)**
+
 ## Requirements
 
 - PHP 7.4 or higher
@@ -203,6 +219,8 @@ To run the project in development mode:
    ```bash
    php -S localhost:8000
    ```
+
+**💡 Troubleshooting:** If you encounter any issues during development, check the [FAQ Guide](faq.html) for common solutions.
 
 ## Production Deployment
 
