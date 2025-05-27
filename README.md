@@ -30,7 +30,7 @@ A secure, modern authentication system built with PHP and MongoDB, featuring com
 - ⚡ **Performance Optimization** - Improving system performance
 - 📦 **Installation Issues** - Prerequisites and setup checklist
 
-➡️ **[View Complete FAQ Guide](faq.html)**
+➡️ **[View Complete FAQ Guide](https://manasess896.github.io/PHP-AUTHENTICATON-SYSTEM/faq.html)**
 
 ## Requirements
 
