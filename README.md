@@ -25,7 +25,7 @@ Secure, modular PHP authentication & account management template built with Mong
 ---
 =======
 **Having trouble getting started?** Check out our comprehensive [**FAQ Guide**](https://manasess896.github.io/PHP-AUTHENTICATON-SYSTEM/faq.html) for solutions to common issues including:
->>>>>>> 64318e13bc7c2c716941dc80542bcafe4257aa77
+
 
 ## 1. Features Overview
 
@@ -41,7 +41,6 @@ Secure, modular PHP authentication & account management template built with Mong
 | Data      | MongoDB collections: `users`, `attempts`, `contacts`, `newsletter`                                                         |
 =======
 ➡️ **[View Complete FAQ Guide](https://manasess896.github.io/PHP-AUTHENTICATON-SYSTEM/faq.html)**
->>>>>>> 64318e13bc7c2c716941dc80542bcafe4257aa77
 
 ---
 
@@ -159,7 +158,7 @@ Library: `spomky-labs/otphp`.
 - Email address
 - Password
 - Remember me option for extended session
->>>>>>> 64318e13bc7c2c716941dc80542bcafe4257aa77
+
 
 ### Password Reset
 
