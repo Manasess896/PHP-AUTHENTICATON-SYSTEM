@@ -1,126 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Authentication System</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
-        }
-        header {
-            background: #50b3a2;
-            color: white;
-            padding-top: 30px;
-            min-height: 70px;
-            border-bottom: #e8491d 3px solid;
-        }
-        header a {
-            color: #ffffff;
-            text-decoration: none;
-            text-transform: uppercase;
-            font-size: 16px;
-        }
-        .showcase {
-            background: #ffffff;
-            padding: 50px;
-            margin-top: 20px;
-            text-align: center;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .btn {
-            display: inline-block;
-            background: #50b3a2;
-            color: white;
-            padding: 10px 20px;
-            margin: 10px;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-        .btn:hover {
-            background: #3a8a7a;
-        }
-        footer {
-            padding: 20px;
-            margin-top: 20px;
-            color: #ffffff;
-            background-color: #50b3a2;
-            text-align: center;
-        }
-        .nav-links {
-            float: right;
-            margin-top: -50px;
-        }
-        .nav-links a {
-            margin-left: 20px;
-        }
-        .dashboard-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px 0;
-        }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .card h3 {
-            color: #50b3a2;
-        }
-    </style>
+<meta charset="UTF-8" />
+<title>Authentication System – Workflow & File Responsibilities</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+<style>
+ body { background:#f8fafc; }
+ code { background:#1e293b; color:#e2e8f0; padding:.15rem .4rem; border-radius:.25rem; font-size:.85rem; }
+ pre code { display:block; padding:1rem; overflow-x:auto; }
+ .section-card { border:0; border-radius:1rem; box-shadow:0 4px 18px rgba(0,0,0,.06); margin-bottom:2rem; }
+ .section-card .card-header { background:linear-gradient(135deg,#4f46e5,#6366f1); color:#fff; border-radius:1rem 1rem 0 0; }
+ .badge-pill { border-radius:50rem; }
+ .flow-step { position:relative; padding-left:2.25rem; margin-bottom:1rem; }
+ .flow-step:before { content:attr(data-step); position:absolute; left:0; top:0; width:1.6rem; height:1.6rem; background:#4f46e5; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:600; }
+ .table-hover tbody tr:hover { background:#f1f5f9; }
+ .anchor-link { text-decoration:none; font-size:.85rem; }
+ .mini-nav a { text-decoration:none; }
+</style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>Dashboard</h1>
-            <nav class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="pages\login.php">Login</a>
-                <a href="pages\register.php">Register</a>
-                <a href="pages\contact.php">Contact</a>
-            </nav>
-        </div>
-    </header>
+<div class="container py-5">
+  <header class="mb-5 text-center">
+    <h1 class="fw-bold mb-3">Authentication System – Architecture & Workflow</h1>
+    <p class="text-muted lead mb-0">Deep dive into the purpose and behavior of each component in the PHP Authentication Template.</p>
+  </header>
 
-    <div class="container">
-        <section class="showcase">
-            <h1>Welcome to Your Dashboard</h1>
-            <div class="dashboard-cards">
-                <div class="card">
-                    <h3>Profile</h3>
-                    <p>Manage your personal information</p>
-                    <a href="#" class="btn">View Profile</a>
-                </div>
-                <div class="card">
-                    <h3>Messages</h3>
-                    <p>Check your messages</p>
-                    <a href="#" class="btn">View Messages</a>
-                </div>
-                <div class="card">
-                    <h3>Settings</h3>
-                    <p>Adjust your preferences</p>
-                    <a href="#" class="btn">View Settings</a>
-                </div>
-            </div>
-        </section>
+  <nav class="mini-nav mb-4">
+    <div class="row g-2">
+      <div class="col-md-3 col-6"><a href="#stack" class="d-block p-2 bg-white shadow-sm rounded">Stack</a></div>
+      <div class="col-md-3 col-6"><a href="#routing" class="d-block p-2 bg-white shadow-sm rounded">Routing</a></div>
+      <div class="col-md-3 col-6"><a href="#flows" class="d-block p-2 bg-white shadow-sm rounded">Auth Flows</a></div>
+      <div class="col-md-3 col-6"><a href="#files" class="d-block p-2 bg-white shadow-sm rounded">Files</a></div>
+      <div class="col-md-3 col-6"><a href="#2fa" class="d-block p-2 bg-white shadow-sm rounded">2FA</a></div>
+      <div class="col-md-3 col-6"><a href="#security" class="d-block p-2 bg-white shadow-sm rounded">Security</a></div>
+      <div class="col-md-3 col-6"><a href="#email" class="d-block p-2 bg-white shadow-sm rounded">Email</a></div>
+      <div class="col-md-3 col-6"><a href="#why-bootstrap" class="d-block p-2 bg-white shadow-sm rounded">Why Bootstrap</a></div>
     </div>
+  </nav>
 
-    <footer>
-        <p>&copy; 2023 Authentication System. All Rights Reserved.</p>
-    </footer>
+  <!-- STACK -->
+  <div id="stack" class="card section-card">
+    <div class="card-header"><h5 class="mb-0">1. Technology Stack & Libraries</h5></div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-lg-6">
+          <h6>Primary Libraries</h6>
+          <ul class="mb-3">
+            <li><strong>MongoDB PHP Driver</strong> – persistence (users, attempts, messages).</li>
+            <li><strong>PHPMailer</strong> – SMTP transport (verification, reset, newsletter).</li>
+            <li><strong>OTPHP</strong> – TOTP generation/validation.</li>
+            <li><strong>phpdotenv</strong> – environment configuration management.</li>
+            <li><strong>SweetAlert2</strong> – interactive dialog & feedback.</li>
+            <li><strong>Bootstrap 5</strong> – responsive UI framework.</li>
+          </ul>
+        </div>
+        <div class="col-lg-6">
+          <h6>Native Security Primitives</h6>
+          <ul class="mb-0">
+            <li><code>password_hash()</code>, <code>password_verify()</code></li>
+            <li><code>random_bytes()</code>, <code>random_int()</code></li>
+            <li><code>hash_equals()</code> (timing‑safe compares)</li>
+            <li>Session isolation + regeneration</li>
+            <li>CSRF tokens per session</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROUTING -->
+  <div id="routing" class="card section-card">
+    <div class="card-header"><h5 class="mb-0">2. Routing (.htaccess)</h5></div>
+    <div class="card-body">
+      <p>Apache rewrite rules convert human‑friendly paths into physical script executions. This produces framework‑like cleanliness without imposing a full MVC stack.</p>
+      <pre><code>/login            → pages/login.php
+/register         → pages/register.php
+/admin-dashboard  → pages/admin.php
+/2fa-setup        → pages/2fa-setup.php
+/2fa-verify       → pages/2fa-verify.php
+/request-another-email → pages/email.php
+</code></pre>
+      <p class="mb-0">Static assets (CSS/JS) are served directly; nonexistent paths route to <code>404.php</code>.</p>
+    </div>
+  </div>
+
+  <!-- AUTH FLOWS -->
+  <div id="flows" class="card section-card">
+    <div class="card-header"><h5 class="mb-0">3. Core Authentication Flows</h5></div>
+    <div class="card-body">
+      <h6 class="mt-2">Login (User/Admin)</h6>
+      <div class="flow-step" data-step="1">User submits credentials + reCAPTCHA.</div>
+      <div class="flow-step" data-step="2">If email unverified → redirected to resend path.</div>
+      <div class="flow-step" data-step="3">If 2FA active → session enters <code>pending_2fa_user_id</code> state.</div>
+      <div class="flow-step" data-step="4">Successful TOTP → full session (<code>user_id</code> or <code>admin_id</code>).</div>
+
+      <h6 class="mt-4">Password Re‑Auth (User 2FA Enrollment)</h6>
+      <p class="mb-2">Adds friction before sensitive operation (enabling 2FA) to mitigate session‑cookie theft scenarios.</p>
+      <ol class="mb-4 ps-3">
+        <li>User clicks “Enable 2FA”.</li>
+        <li>Modal prompts for password (AJAX → server verifies hash).</li>
+        <li>On success sets <code>user_2fa_reauth_passed</code> and redirects to enrollment.</li>
+      </ol>
+
+      <h6 class="mt-2">Admin Forced 2FA Bootstrap</h6>
+      <ol class="ps-3 mb-0">
+        <li>Detect missing <code>twofa_secret</code> for admin.</li>
+        <li>SweetAlert wizard sends 6‑digit email code (3 send cap, 10m expiry).</li>
+        <li>Verification (3 tries) → session flag <code>force2fa_email_passed</code>.</li>
+        <li>Redirect to TOTP provisioning page.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- FILES -->
+  <div id="files" class="card section-card">
+    <div class="card-header"><h5 class="mb-0">4. File Responsibilities</h5></div>
+    <div class="card-body">
+      <table class="table table-sm table-hover align-middle">
+        <thead><tr><th>File</th><th>Purpose</th><th>Key Actions</th></tr></thead>
+        <tbody>
+          <tr><td><code>index.php</code></td><td>Landing + newsletter</td><td>reCAPTCHA, rate limit, insert subscriber</td></tr>
+          <tr><td><code>pages/register.php</code></td><td>Account creation</td><td>Hash password, issue verify token</td></tr>
+          <tr><td><code>pages/email.php</code></td><td>Resend verification</td><td>Throttle, new token, email send</td></tr>
+          <tr><td><code>pages/verify.php</code></td><td>Consume token</td><td>Expire or activate user</td></tr>
+          <tr><td><code>pages/login.php</code></td><td>Primary auth</td><td>reCAPTCHA, pending 2FA logic</td></tr>
+          <tr><td><code>pages/2fa-verify.php</code></td><td>TOTP check</td><td>Promote session to full</td></tr>
+          <tr><td><code>pages/2fa-setup.php</code></td><td>TOTP enrollment</td><td>QR provisioning, store secret, logout</td></tr>
+          <tr><td><code>pages/dashboard.php</code></td><td>User portal</td><td>Password re-auth modal</td></tr>
+          <tr><td><code>pages/admin.php</code></td><td>Admin panel</td><td>Forced 2FA, messaging, newsletter</td></tr>
+          <tr><td><code>pages/reset.php</code></td><td>Request password reset</td><td>Create reset token + email</td></tr>
+          <tr><td><code>pages/password.php</code></td><td>Reset consume</td><td>Validate token & update hash</td></tr>
+          <tr><td><code>contact.php</code></td><td>Public form</td><td>Store message, send confirmation</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2FA -->
+  <div id="2fa" class="card section-card">
+    <div class="card-header"><h5 class="mb-0">5. Two‑Factor Authentication Lifecycle</h5></div>
+    <div class="card-body">
+      <p>TOTP secrets generated via OTPHP, encoded into provisioning URI for scanning. Client authenticator apps (Google / Microsoft / Authy) produce rolling codes. The server only stores the shared secret (no recovery codes yet — recommended addition).</p>
+      <ul>
+        <li>Admin enforcement ensures elevated accounts are never single‑factor beyond initial login window.</li>
+        <li>User password re‑auth prevents silent attacker enrollment.</li>
+        <li>Post‑enrollment session destruction forces reissue of a clean session cookie.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECURITY -->
+  <div id="security" class="card section-card">
+    <div class="card-header"><h5 class="mb-0">6. Security Layers Overview</h5></div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <h6>Prevent</h6>
+          <ul class="mb-0 small">
+            <li>reCAPTCHA on bots</li>
+            <li>CSRF tokens on forms</li>
+            <li>Password hashing (Argon2/Bcrypt)</li>
+            <li>Session segregation</li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h6>Detect / Limit</h6>
+          <ul class="mb-0 small">
+            <li>Attempt counters (email codes)</li>
+            <li>Rate limiting collection</li>
+            <li>Expire tokens & codes</li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h6>Recover / Respond</h6>
+          <ul class="mb-0 small">
+            <li>Password reset tokens</li>
+            <li>Forced logout after 2FA enable</li>
+            <li>Future: audit & alerts</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMAIL -->
+  <div id="email" class="card section-card">
+    <div class="card-header"><h5 class="mb-0">7. Email Operations</h5></div>
+    <div class="card-body">
+      <ul class="mb-3">
+        <li><strong>Verification:</strong> 30‑minute token link (idempotent consumption).</li>
+        <li><strong>Password Reset:</strong> Similar pattern; token removed after use.</li>
+        <li><strong>Forced Admin 2FA:</strong> 6‑digit short‑lived code hashed server‑side.</li>
+        <li><strong>Newsletter:</strong> One email → BCC fanout (optimize for large lists later).</li>
+        <li><strong>Contact Confirmation:</strong> Courtesy acknowledgement email.</li>
+      </ul>
+      <p class="mb-0"><strong>PHPMailer Choice:</strong> Mature, SMTP capable, robust error handling, easier debug than bare `mail()`.</p>
+    </div>
+  </div>
+
+  <!-- WHY BOOTSTRAP -->
+  <div id="why-bootstrap" class="card section-card">
+    <div class="card-header"><h5 class="mb-0">8. Why HTML + Bootstrap Instead of Heavy Framework</h5></div>
+    <div class="card-body">
+      <ul>
+        <li><strong>Speed of Iteration:</strong> Minimal overhead; quick security prototyping.</li>
+        <li><strong>Lower Hosting Requirements:</strong> Works on shared hosts without installing PHP frameworks.</li>
+        <li><strong>Predictable Markup:</strong> Bootstrap components reduce CSS maintenance burden.</li>
+        <li><strong>Progressive Enhancement:</strong> Core flows function without JS; JS only augments UX.</li>
+        <li><strong>Dependency Transparency:</strong> Each file’s purpose is explicit—good for audits & compliance.</li>
+      </ul>
+      <p class="mb-0">You can later migrate to a full MVC or SPA architecture once business needs outgrow the template.</p>
+    </div>
+  </div>
+
+  <footer class="text-center small text-muted mt-5">
+    <p class="mb-1">&copy; 2025 Authentication Template – Documentation</p>
+    <p class="mb-0">Harden before production. Perform independent security review.</p>
+  </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

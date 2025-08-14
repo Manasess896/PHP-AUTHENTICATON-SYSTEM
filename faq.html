@@ -245,7 +245,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">
+      <a class="navbar-brand fw-bold" href="index.php">
         <i class="fas fa-shield-alt me-2"></i>AuthBoost
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -254,10 +254,10 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link" href="index.html">Home</a>
+            <a class="nav-link" href="index.php">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="pages/login.php">Login</a>
+            <a class="nav-link" href="login">Login</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="pages/register.php">Register</a>
@@ -295,16 +295,25 @@
       <h4 class="mb-3"><i class="fas fa-list me-2"></i>Quick Navigation</h4>
       <div class="row">
         <div class="col-md-6">
-          <a href="#recaptcha" class="toc-link">reCAPTCHA Configuration</a> <a href="#domains" class="toc-link">Domain
-            &amp; URL Settings</a>
-          <a href="#htaccess" class="toc-link">Security &amp; .htaccess Rules</a>
-          <a href="#logging" class="toc-link">Debugging &amp; Logging</a>
+          <a href="#recaptcha" class="toc-link">reCAPTCHA Configuration</a>
+          <a href="#domains" class="toc-link">Domain &amp; URL Settings</a>
+          <a href="#twofa" class="toc-link">2FA Setup &amp; Troubleshooting</a>
+          <a href="#reauth" class="toc-link">Password Re-Auth Gate</a>
+          <a href="#session" class="toc-link">Session &amp; Cookie Security</a>
+          <a href="#ratelimit" class="toc-link">Rate Limiting &amp; Attempts</a>
+          <a href="#env" class="toc-link">Environment Variables</a>
         </div>
         <div class="col-md-6">
+          <a href="#htaccess" class="toc-link">Security &amp; .htaccess Rules</a>
+          <a href="#logging" class="toc-link">Debugging &amp; Logging</a>
           <a href="#email" class="toc-link">Email Configuration</a>
+          <a href="#deliverability" class="toc-link">Email Deliverability</a>
           <a href="#database" class="toc-link">Database Issues</a>
+          <a href="#indexing" class="toc-link">MongoDB Indexing</a>
           <a href="#permissions" class="toc-link">File Permissions</a>
           <a href="#performance" class="toc-link">Performance Issues</a>
+          <a href="#post2fa" class="toc-link">Post-2FA Redirect</a>
+          <a href="#future" class="toc-link">Planned Enhancements</a>
         </div>
       </div>
     </div>
@@ -401,6 +410,278 @@
             <i class="fas fa-info-circle me-2"></i>
             <strong>Note:</strong> URL marking and SQL injection protection are not implemented in this version.
             Consider adding these for production use.
+          </div>
+        </div>
+      </div>
+
+      <!-- 2FA Setup & Troubleshooting -->
+      <div class="faq-card" id="twofa">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-critical">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            2FA Setup &amp; Troubleshooting
+            <span class="status-badge status-critical">Critical</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Problem:</strong> Cannot complete 2FA setup, QR code not showing, or codes rejected.</p>
+          <h5><i class="fas fa-stethoscope me-2"></i>Checklist:</h5>
+          <ol class="step-list">
+            <li><strong>Time Sync:</strong> Ensure your device time is in sync (enable automatic time). TOTP requires
+              clock accuracy (&lt;30s drift).</li>
+            <li><strong>Single Use Secret:</strong> Refreshing setup page invalidates the old preview secret (session
+              regenerated). Scan the latest QR.</li>
+            <li><strong>Wrong Digits:</strong> Make sure you use the <span class="highlight">current 6-digit code</span>
+              (not recovery or old code).</li>
+            <li><strong>Already Enrolled:</strong> If you re-run setup, previous secret remains until new one is
+              confirmed.</li>
+            <li><strong>Session Expired:</strong> If you logged in long ago, log out/in before enrolling (fresh CSRF +
+              session).</li>
+          </ol>
+          <div class="alert alert-warning"><i class="fas fa-info-circle me-2"></i>No backup codes yet. Plan to add them
+            under <em>Planned Enhancements</em>.</div>
+        </div>
+      </div>
+
+      <!-- Password Re-Auth Gate -->
+      <div class="faq-card" id="reauth">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-important">
+              <i class="fas fa-unlock-alt"></i>
+            </div>
+            Password Re-Auth Gate (User 2FA)
+            <span class="status-badge status-important">Important</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Why required?</strong> Prevents a hijacked but unlocked session from silently adding 2FA (which
+            attacker could capture) or disabling security factors.</p>
+          <h5><i class="fas fa-key me-2"></i>Behavior:</h5>
+          <ul>
+            <li>Clicking "Enable 2FA" opens a password modal.</li>
+            <li>On success, a short-lived session flag <code>user_2fa_reauth_passed</code> is set.</li>
+            <li>Access to <code>/2fa-setup</code> is blocked without that flag (HTTP redirect back).</li>
+            <li>Flag cleared after successful enrollment or logout.</li>
+          </ul>
+          <div class="alert alert-info"><i class="fas fa-clock me-2"></i> Consider adding an expiry (e.g., 5 minutes)
+            for the re-auth flag in future.</div>
+        </div>
+      </div>
+
+      <!-- Session & Cookie Security -->
+      <div class="faq-card" id="session">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-info">
+              <i class="fas fa-cookie-bite"></i>
+            </div>
+            Session &amp; Cookie Security
+            <span class="status-badge status-info">Info</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Controls:</strong> Session regeneration after login, forced logout after 2FA enrollment, role-based
+            gating.</p>
+          <ul>
+            <li>Set <code>SESSION_COOKIE_SECURE=true</code> in production (HTTPS required).</li>
+            <li>Use <code>SameSite=Strict</code> to reduce CSRF surface.</li>
+            <li>Store minimal PII in session; user id + role + flags only.</li>
+            <li>Consider Redis or Memcached if scaling horizontally.</li>
+          </ul>
+          <div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i> Ensure PHP session.save_path
+            has proper permissions and not world-readable.</div>
+        </div>
+      </div>
+
+      <!-- Session Variables Reference -->
+      <div class="faq-card" id="sessions-ref">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-info">
+              <i class="fas fa-database"></i>
+            </div>
+            Session Variables Reference
+            <span class="status-badge status-info">Info</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Overview:</strong> The application uses isolated session keys to separate pre-auth states
+            (verification / 2FA) from fully privileged sessions.</p>
+          <div class="table-responsive">
+            <table class="table table-sm table-striped">
+              <thead>
+                <tr>
+                  <th>Key</th>
+                  <th>When Set</th>
+                  <th>Purpose</th>
+                  <th>Cleared</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>csrf_token</td>
+                  <td>First protected form</td>
+                  <td>CSRF protection</td>
+                  <td>Session end</td>
+                </tr>
+                <tr>
+                  <td>pending_verification</td>
+                  <td>Post-register / login (unverified)</td>
+                  <td>Gate email verification</td>
+                  <td>On verification</td>
+                </tr>
+                <tr>
+                  <td>user_email</td>
+                  <td>Verification workflow</td>
+                  <td>Resend context</td>
+                  <td>On verification</td>
+                </tr>
+                <tr>
+                  <td>verification_attempts</td>
+                  <td>Verification resend</td>
+                  <td>Rate limiting</td>
+                  <td>Success / end</td>
+                </tr>
+                <tr>
+                  <td>registration_time</td>
+                  <td>Registration</td>
+                  <td>Window control</td>
+                  <td>End</td>
+                </tr>
+                <tr>
+                  <td>pending_2fa_user_id</td>
+                  <td>Password accepted (2FA enabled)</td>
+                  <td>Stage identity awaiting TOTP</td>
+                  <td>TOTP success / logout</td>
+                </tr>
+                <tr>
+                  <td>pending_2fa_is_admin</td>
+                  <td>Same as above (admin)</td>
+                  <td>Marks admin pending flow</td>
+                  <td>TOTP success / logout</td>
+                </tr>
+                <tr>
+                  <td>role</td>
+                  <td>Full login</td>
+                  <td>User vs Admin canonical role</td>
+                  <td>Logout</td>
+                </tr>
+                <tr>
+                  <td>is_admin</td>
+                  <td>Full admin login</td>
+                  <td>Legacy flag</td>
+                  <td>Logout</td>
+                </tr>
+                <tr>
+                  <td>admin_id</td>
+                  <td>Admin login</td>
+                  <td>Admin user id</td>
+                  <td>Logout</td>
+                </tr>
+                <tr>
+                  <td>admin_username</td>
+                  <td>Admin login</td>
+                  <td>Display name</td>
+                  <td>Logout</td>
+                </tr>
+                <tr>
+                  <td>user_id</td>
+                  <td>User login</td>
+                  <td>User id</td>
+                  <td>Logout</td>
+                </tr>
+                <tr>
+                  <td>username</td>
+                  <td>User login</td>
+                  <td>Display name</td>
+                  <td>Logout</td>
+                </tr>
+                <tr>
+                  <td>twofa_setup_secret</td>
+                  <td>2FA enrollment start</td>
+                  <td>Proposed TOTP secret</td>
+                  <td>Enroll success / cancel</td>
+                </tr>
+                <tr>
+                  <td>twofa_setup_uri</td>
+                  <td>2FA enrollment</td>
+                  <td>Provisioning URI for QR</td>
+                  <td>Enroll success / cancel</td>
+                </tr>
+                <tr>
+                  <td>force2fa_email_passed</td>
+                  <td>Admin email code success</td>
+                  <td>Permit TOTP setup</td>
+                  <td>After enrollment</td>
+                </tr>
+                <tr>
+                  <td>user_2fa_reauth_passed</td>
+                  <td>User password modal success</td>
+                  <td>Permit TOTP setup (user)</td>
+                  <td>After enrollment</td>
+                </tr>
+                <tr>
+                  <td>reauth_2fa_attempts</td>
+                  <td>User re-auth failures</td>
+                  <td>Throttle password prompts</td>
+                  <td>On success / end</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="alert alert-secondary"><i class="fas fa-lightbulb me-2"></i>Future: add expiry timestamps for
+            re-auth &amp; forced 2FA flags + IP/user-agent binding for higher assurance.</div>
+        </div>
+      </div>
+
+      <!-- Rate Limiting & Attempts -->
+      <div class="faq-card" id="ratelimit">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-important">
+              <i class="fas fa-gauge-high"></i>
+            </div>
+            Rate Limiting &amp; Attempt Counters
+            <span class="status-badge status-important">Important</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Scopes:</strong> Login attempts, forced admin 2FA email code attempts (max 3), password re-auth
+            (e.g., 5), resend email verification, contact form, newsletter join.</p>
+          <h5><i class="fas fa-database me-2"></i>Storage:</h5>
+          <p>MongoDB <code>attempts</code> collection (pattern: key + window). You can add TTL index:</p>
+          <div class="code-block">db.attempts.createIndex({"expiresAt":1},{expireAfterSeconds:0})</div>
+          <p><strong>Idea:</strong> Add IP + User composite keys to slow credential stuffing.</p>
+        </div>
+      </div>
+
+      <!-- Environment Variables Reference -->
+      <div class="faq-card" id="env">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-info">
+              <i class="fas fa-sliders-h"></i>
+            </div>
+            Environment Variables Overview
+            <span class="status-badge status-info">Info</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p>See <code>.env.example</code> for full list. Highlights:</p>
+          <ul>
+            <li><code>APP_URL</code> Base URL for email links (verification/reset/2FA).</li>
+            <li><code>MONGODB_URI</code> Connection string; keep secret.</li>
+            <li><code>MAIL_* </code> SMTP credentials &amp; debug level.</li>
+            <li><code>RECAPTCHA_SITE_KEY / SECRET_KEY</code> Bot mitigation.</li>
+            <li><code>FORCE_ADMIN_2FA</code> (bool) Enforce admin 2FA bootstrap.</li>
+            <li><code>SESSION_COOKIE_SECURE</code> Force secure cookies when HTTPS.</li>
+            <li><code>LOG_LEVEL</code> Adjust verbosity (<code>error|warning|info|debug</code>).</li>
+          </ul>
+          <div class="alert alert-secondary"><i class="fas fa-lightbulb me-2"></i>Missing a variable? Add it to
+            <code>.env</code>, load with Dotenv before other bootstrapping.
           </div>
         </div>
       </div>
@@ -553,6 +834,33 @@
         </div>
       </div>
 
+      <!-- Email Deliverability -->
+      <div class="faq-card" id="deliverability">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-info">
+              <i class="fas fa-paper-plane"></i>
+            </div>
+            Email Deliverability (SPF / DKIM / DMARC)
+            <span class="status-badge status-info">Info</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Issue:</strong> Emails land in spam or are silently dropped.</p>
+          <ol class="step-list">
+            <li><strong>SPF Record:</strong> Add your sending provider include (e.g.,
+              <code>v=spf1 include:sendgrid.net ~all</code>).
+            </li>
+            <li><strong>DKIM:</strong> Enable and publish DNS TXT key from provider (SendGrid/Mailgun).</li>
+            <li><strong>DMARC:</strong> Start with <code>p=none</code> policy to monitor, then tighten.</li>
+            <li><strong>From Address:</strong> Use a verified domain email (avoid free mailbox for production).</li>
+            <li><strong>Consistency:</strong> Keep <code>MAIL_FROM_NAME</code> stable to build reputation.</li>
+          </ol>
+          <div class="alert alert-success"><i class="fas fa-thumbs-up me-2"></i>Implementing all three increases trust
+            and inbox rate.</div>
+        </div>
+      </div>
+
       <!-- Database Issues -->
       <div class="faq-card" id="database">
         <div class="faq-header">
@@ -596,6 +904,29 @@
             <i class="fas fa-exclamation-triangle me-2"></i>
             <strong>Security:</strong> Never expose database credentials in client-side code.
           </div>
+        </div>
+      </div>
+
+      <!-- MongoDB Indexing -->
+      <div class="faq-card" id="indexing">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-important">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            MongoDB Indexing &amp; Performance
+            <span class="status-badge status-important">Important</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Recommended Indexes:</strong></p>
+          <div class="code-block">db.users.createIndex({ email:1 }, { unique:true })
+            db.users.createIndex({ username:1 }, { unique:true })
+            db.users.createIndex({ is_admin:1 })
+            db.users.createIndex({ "force2fa_code_expires":1 }, { expireAfterSeconds:0 })
+            db.users.createIndex({ "password_reset_expires":1 }, { expireAfterSeconds:0 })
+            db.attempts.createIndex({ key:1, windowStart:1 })</div>
+          <p><strong>TTL Note:</strong> Use date fields with TTL for automatic cleanup of transient tokens.</p>
         </div>
       </div>
 
@@ -672,6 +1003,54 @@
               Use CDNs for static assets like Bootstrap and jQuery.
             </li>
           </ol>
+        </div>
+      </div>
+
+      <!-- Post-2FA Redirect -->
+      <div class="faq-card" id="post2fa">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-info">
+              <i class="fas fa-sign-out-alt"></i>
+            </div>
+            Post-2FA Logout &amp; Redirect
+            <span class="status-badge status-info">Info</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <p><strong>Behavior:</strong> After successful 2FA enrollment the system destroys the current session and
+            redirects to login with a query flag (e.g., <code>?twofa_enabled=1</code>) so the user authenticates under
+            elevated security context.</p>
+          <p><strong>Why:</strong> Prevents reuse of pre-2FA session cookies and enforces fresh TOTP usage on next
+            login.</p>
+          <p><strong>Tip:</strong> Display a flash message acknowledging success on the login page.</p>
+        </div>
+      </div>
+
+      <!-- Planned Enhancements -->
+      <div class="faq-card" id="future">
+        <div class="faq-header">
+          <h3 class="faq-title">
+            <div class="icon-wrapper icon-important">
+              <i class="fas fa-lightbulb"></i>
+            </div>
+            Planned / Optional Enhancements
+            <span class="status-badge status-important">Important</span>
+          </h3>
+        </div>
+        <div class="faq-body">
+          <ul>
+            <li>2FA Backup Recovery Codes</li>
+            <li>Trusted Device / Remember Browser (long-lived signed token)</li>
+            <li>Device &amp; Login Activity Log (geo/IP)</li>
+            <li>Admin Audit Log (newsletter sends / user role changes)</li>
+            <li>Role-Based Access Expansion (RBAC matrix)</li>
+            <li>API Token / Personal Access Tokens (HMAC)</li>
+            <li>WebAuthn / Passkey Support</li>
+            <li>Password Breach Checking (HIBP k-Anonymity API)</li>
+          </ul>
+          <div class="alert alert-secondary"><i class="fas fa-seedling me-2"></i> Contributions welcome—open an issue or
+            PR.</div>
         </div>
       </div>
 
@@ -775,7 +1154,7 @@
       <p class="mb-3">Secure, modern authentication solution for PHP applications</p>
       <div class="d-flex justify-content-center gap-3">
         <a href="index.html" class="text-light text-decoration-none">Home</a>
-        <a href="pages/login.php" class="text-light text-decoration-none">Login</a>
+        <a href="login" class="text-light text-decoration-none">Login</a>
         <a href="pages/register.php" class="text-light text-decoration-none">Register</a>
         <a href="faq.html" class="text-light text-decoration-none">FAQ</a>
       </div>

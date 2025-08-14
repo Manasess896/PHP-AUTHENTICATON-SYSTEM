@@ -1,38 +1,37 @@
-# Prevent directory listing
-Options -Indexes
+RewriteEngine On
+# Options -Indexes
 
-# Protect sensitive files
-<FilesMatch "\.(env|config|ini|json|lock|htaccess|log)$">
-    Order Allow,Deny
-    Deny from all
-</FilesMatch>
+ErrorDocument 404 /404.php
 
-# Add security headers
-<IfModule mod_headers.c>
-    Header set X-Content-Type-Options "nosniff"
-    Header set X-XSS-Protection "1; mode=block"
-    Header set X-Frame-Options "SAMEORIGIN"
-    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-    # Enhanced CSP for reCAPTCHA
-    Header set Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://maxcdn.bootstrapcdn.com https://www.google.com https://www.gstatic.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://code.jquery.com https://maxcdn.bootstrapcdn.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://www.google.com/recaptcha/ 'unsafe-eval'; script-src-elem 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://code.jquery.com https://maxcdn.bootstrapcdn.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://www.google.com/recaptcha/; font-src 'self' https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://maxcdn.bootstrapcdn.com https://www.google.com https://www.gstatic.com data:; frame-src 'self' https://www.google.com https://recaptcha.google.com https://www.recaptcha.net; connect-src 'self' https://www.google.com https://www.recaptcha.net https://recaptcha.google.com https://www.gstatic.com; img-src 'self' data: https://www.google.com https://www.gstatic.com;"
-</IfModule>
 
-# Enable reCAPTCHA functionality
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    
-    # Allow reCAPTCHA API requests
-    RewriteCond %{REQUEST_URI} ^/recaptcha/api
-    RewriteRule .* - [L]
-    
-    # Allow connections to Google's reCAPTCHA servers
-    RewriteCond %{HTTP_REFERER} ^https://www\.google\.com/ [OR]
-    RewriteCond %{HTTP_REFERER} ^https://www\.recaptcha\.net/ [OR]
-    RewriteCond %{HTTP_REFERER} ^https://recaptcha\.google\.com/
-    RewriteRule .* - [L]
-</IfModule>
- 
-# Redirect HTTP to HTTPS if needed
-# RewriteEngine On
-# RewriteCond %{HTTPS} off
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+DirectoryIndex index.php
+
+
+# Redirect direct access to pages/login.php to /login
+RewriteCond %{THE_REQUEST} \s/pages/login\.php[\s?] [NC]
+RewriteRule ^pages/login\.php$ /login [R=301,L]
+
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/index\.php[?\s] [NC]
+RewriteRule ^index\.php$ /home [R=301,L]
+
+RewriteRule ^home?$ index.php [L]
+RewriteRule ^about?$ about.php [L]
+RewriteRule ^login?$ pages/login.php [L]
+RewriteRule ^register?$ pages/register.php [L]
+RewriteRule ^dashboard?$ pages/dashboard.php [L]
+RewriteRule ^admin-dashboard?$  pages/admin.php [L]
+RewriteRule ^request-another-email?$ pages/email.php [L]
+RewriteRule ^forgot-password?$ pages/reset.php [L]
+RewriteRule ^reset-password?$ pages/password.php [L]
+RewriteRule ^verify-email?$ pages/verify.php [L]
+RewriteRule ^contact-us?$ contact.php [L]
+RewriteRule ^2fa-setup?$ pages/2fa-setup.php [L]
+RewriteRule ^2fa-verify?$ pages/2fa-verify.php [L]
+RewriteRule ^admin-login?$ pages/admin-login.php [L]
+RewriteRule . 404.php [L]
