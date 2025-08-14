@@ -1,15 +1,17 @@
-# Exclusions for smaller Docker build context
+
 .git
 .gitignore
 README.md
-faq.html
+.DS_Store
+
 logs
 *.log
+
 .env
 .env.*
-.DS_Store
+
 node_modules
-vendor/*
-# Allow composer vendor via multi-stage (will be copied from builder)
+
+
 !composer.json
 !composer.lock
