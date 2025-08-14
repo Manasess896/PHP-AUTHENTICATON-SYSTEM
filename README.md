@@ -21,10 +21,15 @@ Secure, modular PHP authentication & account management template built with Mong
 13. Extending / Customizing
 14. Troubleshooting
 
+<<<<<<< HEAD
 ---
+=======
+**Having trouble getting started?** Check out our comprehensive [**FAQ Guide**](https://manasess896.github.io/PHP-AUTHENTICATON-SYSTEM/faq.html) for solutions to common issues including:
+>>>>>>> 64318e13bc7c2c716941dc80542bcafe4257aa77
 
 ## 1. Features Overview
 
+<<<<<<< HEAD
 | Category  | Capability                                                                                                                 |
 | --------- | -------------------------------------------------------------------------------------------------------------------------- |
 | Core Auth | Registration, login, logout, session protection                                                                            |
@@ -34,6 +39,9 @@ Secure, modular PHP authentication & account management template built with Mong
 | Admin     | Dashboard for contacts + newsletter blast, enforced 2FA bootstrap via signed email code                                    |
 | UX        | Bootstrap 5 UI, SweetAlert2 feedback, progressive enhancement (JS optional for core)                                       |
 | Data      | MongoDB collections: `users`, `attempts`, `contacts`, `newsletter`                                                         |
+=======
+➡️ **[View Complete FAQ Guide](https://manasess896.github.io/PHP-AUTHENTICATON-SYSTEM/faq.html)**
+>>>>>>> 64318e13bc7c2c716941dc80542bcafe4257aa77
 
 ---
 
@@ -119,6 +127,7 @@ Keeps URLs framework‑like while staying on vanilla Apache + mod_rewrite.
 
 Before enabling 2FA, user must confirm password via AJAX (sets `user_2fa_reauth_passed`). Prevents silent hijack enabling attacker’s 2FA.
 
+<<<<<<< HEAD
 ### Admin Forced 2FA
 
 If admin logs in without `twofa_secret`, JS dialogue triggers:
@@ -146,6 +155,11 @@ Library: `spomky-labs/otphp`.
 - Token: 64 hex chars (random_bytes) + 30‑minute expiry field.
 - `verify.php` validates token + expiry → sets `is_verified` and removes transient fields.
 - Resend attempts limited (session counter) to reduce abuse.
+=======
+- Email address
+- Password
+- Remember me option for extended session
+>>>>>>> 64318e13bc7c2c716941dc80542bcafe4257aa77
 
 ### Password Reset
 
@@ -178,7 +192,11 @@ Library: `spomky-labs/otphp`.
 | Randomness               | `random_bytes()` / `random_int()` cryptographic RNG                                                                                                              |
 | XSS Mitigation           | All user‑derived data is escaped via `e()` (HTML), `escape_attr()`, or `json_encode()` for JS contexts. Avoid inline event handlers and prefer external scripts. |
 
+<<<<<<< HEAD
 Suggested additions (not yet implemented):
+=======
+**💡 Troubleshooting:** If you encounter any issues during development, check the [FAQ Guide](https://manasess896.github.io/PHP-AUTHENTICATON-SYSTEM/faq.html) for common solutions.
+>>>>>>> 64318e13bc7c2c716941dc80542bcafe4257aa77
 
 - Content Security Policy (CSP) header
 - Strict Transport Security (HSTS) (production only w/ HTTPS)
